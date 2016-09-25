@@ -1,5 +1,13 @@
+<style>
+	.online{
+		border:3px solid #8BC53F;
+	}
+	.offline{
+		border:3px solid #696969;
+	}
+</style>
 <span>
-	<a target="_blank" rel="noreferrer" href="{{groupURL}}"><b><img src="{{groupAvatar}}"> <h3>{{groupName}}</h3></b></a><br>
+	<a target="_blank" rel="noreferrer" href="{{groupURL}}"><b><img src="{{groupAvatarFull}}"> <h3>{{groupName}}</h3></b></a><br>
 	<h3>Member Count: {{groupMemberCount}}&nbsp;&nbsp;&nbsp;Members Online: {{groupMembersOnline}}&nbsp;&nbsp;&nbsp;Members in Game: {{groupMembersInGame}}</h3>
 	<br>
 	[[members]]
