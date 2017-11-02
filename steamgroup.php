@@ -5,10 +5,13 @@
 	 * @param string $steamAPIKey See: https://steamcommunity.com/dev/apikey
 	 * @param string $groupIdentifier The Steam Group Identifier (SteamID or CustomURL)
 	 * @param string $noMembers optional, if true members won't be loaded
-	 * @return array
+	 * @return array or null if an error occured
 	 */
 	function loadGroup($steamAPIKey,$groupIdentifier,$noMembers=false){
 		$steamgroupArray=getSteamGroupArray($groupIdentifier);
+		if($steamGroupArray==null){
+			return null;
+		}
 		$group=[];
 		$group['groupID']= $steamgroupArray['groupID64'];
 		$group['groupName']= $steamgroupArray['groupDetails']['groupName'];
@@ -28,7 +31,8 @@
 			}
 			$membersJSON=@file_get_contents("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=$steamAPIKey&steamids=$memberIDs");
 			if($http_response_header[0]!=="HTTP/1.0 200 OK"){
-				die("is your steam api key invalid?<br>server returned: ".$http_response_header[0]);
+				echo("steamgroupwidget: is your steam api key invalid?<br>server returned: ".$http_response_header[0]);
+				return null;
 			}
 			$members=json_decode($membersJSON,true);
 			foreach($members['response']['players'] as $index=>$member){
@@ -53,13 +57,13 @@
 	 */
 	function renderGroup($groupArray,$templateGroupPath,$templateMemberPath=false){
 		if(!file_exists($templateGroupPath)){
-			die("group template '$templateGroupPath' does not exist");
+			die("steamgroupwidget: group template '$templateGroupPath' does not exist");
 		}
 		$template=file_get_contents($templateGroupPath);
 		$template=injectTemplate($groupArray,$template);
 		if($templateMemberPath!==false && ($lastPos = strpos($template, "[[members]]"))!== false) {
 			if(!file_exists($templateMemberPath)){
-				die("member template '$templateMemberPath' does not exist");
+				die("steamgroupwidget: member template '$templateMemberPath' does not exist");
 			}
 			$templateMember=file_get_contents($templateMemberPath);
 			$templateMembers="";
@@ -76,7 +80,8 @@
 		$use_errors= libxml_use_internal_errors(true);
 		$steamgroupXML= @simplexml_load_file($steamgroupXMLURL,'SimpleXMLElement', LIBXML_NOCDATA);
 		if(false === $steamgroupXML){
-			die("group not found or other (connectivity?) problem");
+			echo("steamgroupwidget: group not found or other (connectivity?) problem");
+			return null;
 		}
 		$steamgroupJSON = json_encode($steamgroupXML);
 		return json_decode($steamgroupJSON,TRUE);
@@ -94,12 +99,12 @@
 				$varLength=$lastPosEnd-$lastPos-$needleLength;
 				$var=substr($template,$lastPos+$needleLength,$varLength);
 				if(!isset($valueArray[$var])){
-					die("invalid variable '$var' in template");
+					die("steamgroupwidget: invalid variable '$var' in template");
 				}
 				$variables[$index]=$var;
 				$index++;
 			}else{
-				die("error in template, missing ".$needleEnd);
+				die("steamgroupwidget: error in template, missing ".$needleEnd);
 			}
 			$lastPos=$lastPos + $varLength;
 		}
