@@ -8,8 +8,10 @@ The following PHP will load the group details, render it using your own template
 <?php
 	include("steamgroup.php");
 	$group=loadGroup('<yourSteamID>','<yourGroupIdentifier>');
-	$html=renderGroup($group,'steamGroupTemplate.html','steamMemberTemplate.html');
-	echo($html);
+	if($groupInfo != null){
+		$html=renderGroup($group,'steamGroupTemplate.html','steamMemberTemplate.html');
+		echo($html);
+	}
 ?>
 ```
 The templates themselves are very easy to use, double curly brackets are used to insert api data:
@@ -22,4 +24,3 @@ The templates themselves are very easy to use, double curly brackets are used to
 
 ## Result of the example provided
 ![screenshot](http://i.imgur.com/DrfsYTu.png)
-
