@@ -8,7 +8,7 @@
 	 * @return array or null if an error occured
 	 */
 	function loadGroup($steamAPIKey,$groupIdentifier,$noMembers=false){
-		$steamgroupArray=getSteamGroupArray($groupIdentifier);
+		$steamGroupArray=getSteamGroupArray($groupIdentifier);
 		if($steamGroupArray==null){
 			return null;
 		}
