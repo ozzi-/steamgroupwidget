@@ -23,4 +23,4 @@ The templates themselves are very easy to use, double curly brackets are used to
 
 
 ## Result of the example provided
-![screenshot](http://i.imgur.com/DrfsYTu.png)
+![screenshot](https://i.imgur.com/KUz3gLG.png)
