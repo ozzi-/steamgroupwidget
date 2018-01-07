@@ -12,21 +12,22 @@
 		if($steamGroupArray==null){
 			return null;
 		}
-		$group=[];
-		$group['groupID']= $steamgroupArray['groupID64'];
-		$group['groupName']= $steamgroupArray['groupDetails']['groupName'];
-		$group['groupURL']= "https://steamcommunity.com/groups/".$steamgroupArray['groupDetails']['groupURL'];
-		$group['groupAvatarFull']= $steamgroupArray['groupDetails']['avatarFull'];
-		$group['groupAvatarMedium']= $steamgroupArray['groupDetails']['avatarMedium'];
-		$group['groupAvatarSmall']= $steamgroupArray['groupDetails']['avatarIcon'];
-		$group['groupMemberCount']= $steamgroupArray['groupDetails']['memberCount'];
-		$group['groupMembersInChat']= $steamgroupArray['groupDetails']['membersInChat'];
-		$group['groupMembersInGame']= $steamgroupArray['groupDetails']['membersInGame'];
-		$group['groupMembersOnline']= $steamgroupArray['groupDetails']['membersOnline'];
 		
+		$group=[];
+		$group['groupID']= $steamGroupArray['groupID64'];
+		$group['groupName']= $steamGroupArray['groupDetails']['groupName'];
+		$group['groupURL']= "https://steamcommunity.com/groups/".$steamGroupArray['groupDetails']['groupURL'];
+		$group['groupAvatarFull']= $steamGroupArray['groupDetails']['avatarFull'];
+		$group['groupAvatarMedium']= $steamGroupArray['groupDetails']['avatarMedium'];
+		$group['groupAvatarSmall']= $steamGroupArray['groupDetails']['avatarIcon'];
+		$group['groupMemberCount']= $steamGroupArray['groupDetails']['memberCount'];
+		$group['groupMembersInChat']= $steamGroupArray['groupDetails']['membersInChat'];
+		$group['groupMembersInGame']= $steamGroupArray['groupDetails']['membersInGame'];
+		$group['groupMembersOnline']= $steamGroupArray['groupDetails']['membersOnline'];
+	
 		if(!$noMembers){
 			$memberIDs="";
-			foreach($steamgroupArray['members']['steamID64'] as $index=>$memberID){
+			foreach($steamGroupArray['members']['steamID64'] as $index=>$memberID){
 				$memberIDs.=$memberID.",";
 			}
 			$membersJSON=@file_get_contents("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=$steamAPIKey&steamids=$memberIDs");
@@ -63,7 +64,8 @@
 		$template=injectTemplate($groupArray,$template);
 		if($templateMemberPath!==false && ($lastPos = strpos($template, "[[members]]"))!== false) {
 			if(!file_exists($templateMemberPath)){
-				die("steamgroupwidget: member template '$templateMemberPath' does not exist");
+				echo("steamgroupwidget: member template '$templateMemberPath' does not exist");
+				return null;
 			}
 			$templateMember=file_get_contents($templateMemberPath);
 			$templateMembers="";
@@ -79,7 +81,7 @@
 		$steamgroupXMLURL= "https://steamcommunity.com/groups/$groupIdentifier/memberslistxml/?xml=1";
 		$use_errors= libxml_use_internal_errors(true);
 		$steamgroupXML= @simplexml_load_file($steamgroupXMLURL,'SimpleXMLElement', LIBXML_NOCDATA);
-		if(false === $steamgroupXML){
+		if(!$steamgroupXML){
 			echo("steamgroupwidget: group not found or other (connectivity?) problem");
 			return null;
 		}
